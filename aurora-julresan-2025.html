@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Julresan 2025 – Aurora</title>
+  <style>
+    :root{
+      --bg: #0b0f17;
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.72);
+      --muted2: rgba(255,255,255,0.55);
+      --border: rgba(255,255,255,0.16);
+      --shadow: rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(255,255,255,0.10), transparent 60%),
+                  radial-gradient(900px 600px at 80% 20%, rgba(255,255,255,0.08), transparent 55%),
+                  radial-gradient(900px 600px at 50% 90%, rgba(255,255,255,0.06), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.35;
+      overflow-x:hidden;
+    }
+
+    /* Subtil "wallpaper" med julkalender-titlar */
+    .wallpaper{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.18;
+    }
+    .wallpaper .sheet{
+      position: absolute;
+      left: -12vw;
+      top: -10vh;
+      width: 124vw;
+      height: 120vh;
+      transform: rotate(-9deg);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 26px;
+      padding: 40px 24px;
+      color: rgba(255,255,255,0.44);
+      font-weight: 650;
+      letter-spacing: 0.2px;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .wallpaper .line{
+      font-size: 13px;
+      opacity: 0.18;
+    }
+    .wallpaper .line strong{
+      font-weight: 850;
+      opacity: 0.85;
+    }
+    @media (min-width: 700px){ .wallpaper .line{ font-size: 14px; } }
+
+    .wrap{
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 22px 16px 28px;
+      display: grid;
+      gap: 14px;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      box-shadow: 0 12px 30px var(--shadow);
+      font-size: 13px;
+      backdrop-filter: blur(6px);
+    }
+    .badge .dot{ width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.55); }
+
+    .card{
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+      box-shadow: 0 16px 38px var(--shadow);
+      padding: 18px 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .title{ margin: 2px 0 2px; font-size: 20px; letter-spacing: 0.2px; }
+    .subtitle{ margin: 0; color: var(--muted); font-size: 14px; }
+
+    .qhead{ display:flex; align-items:flex-start; justify-content:space-between; gap: 10px; }
+    .qnum{ font-size: 12px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    .question{ font-size: 18px; margin: 6px 0 10px; }
+
+    .rule{
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.22);
+      color: rgba(255,255,255,0.82);
+      font-size: 14px;
+    }
+
+    .options{ display:grid; gap: 10px; margin-top: 6px; }
+    button.opt{
+      width: 100%;
+      text-align: left;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 12px 12px;
+      cursor:pointer;
+      font-size: 15px;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+    button.opt:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.22); }
+    button.opt:disabled{ cursor:not-allowed; opacity: 0.72; transform:none; }
+
+    .opt .label{
+      display:inline-block;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.20);
+      background: rgba(0,0,0,0.18);
+      color: rgba(255,255,255,0.80);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 20px;
+      text-align:center;
+      margin-right: 10px;
+    }
+
+    .feedback{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.22);
+      color: rgba(255,255,255,0.86);
+      font-size: 14px;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback .small{ margin-top: 6px; color: var(--muted); font-size: 13px; }
+
+    .actions{ display:flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .btn{
+      appearance:none;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      padding: 10px 12px;
+      cursor:pointer;
+      font-size: 14px;
+      font-weight: 750;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.26); }
+    .btn.secondary{ background: rgba(0,0,0,0.18); color: rgba(255,255,255,0.86); }
+
+    .divider{ height: 1px; background: rgba(255,255,255,0.12); margin: 12px 0; }
+    .barwrap{ height: 10px; border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); overflow:hidden; }
+    .bar{ height: 100%; width: 0%; background: rgba(255,255,255,0.42); transition: width 180ms ease; }
+    .meta{ display:flex; gap: 12px; align-items:center; justify-content:space-between; color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+    /* Bekräftelse-overlay */
+    #confirmOverlay{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:50;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+    }
+    #confirmOverlay .box{ max-width:520px; margin: 18vh auto 0; padding: 0 14px; }
+    #confirmOverlay .panel{
+      border-radius:18px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(15,18,28,0.92);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+      padding: 16px;
+    }
+    #confirmOverlay .head{ font-size:18px; font-weight:850; margin-bottom:8px; }
+    #confirmOverlay .txt{ color: rgba(255,255,255,0.82); font-size:14px; }
+    #confirmOverlay .row{ display:flex; gap:10px; justify-content:flex-end; margin-top:14px; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+  <div class="wallpaper" aria-hidden="true">
+    <div class="sheet" id="wallpaperSheet"></div>
+  </div>
+
+  <div class="wrap">
+    <header>
+      <div>
+        <h1 class="title">Julresan 2025</h1>
+        <p class="subtitle">SVT:s julkalender genom åren, i quizform.</p>
+      </div>
+      <div class="badge" title="Poängen är bara för kul.">
+        <span class="dot"></span>
+        <span id="scoreBadge">Poäng: 0/14</span>
+      </div>
+    </header>
+
+    <section class="card" id="introCard">
+      <div class="qnum">Start</div>
+      <div class="question">
+        Hej Aurora.<br/>
+        Du har fått en julklapp.<br/>
+        Men först, en liten julkalenderresa.
+      </div>
+      <div class="rule">
+        8 frågor. 2 försök per fråga.<br/>
+        Inga digitala hjälpmedel (tomten ser allt 😉).
+      </div>
+      <div style="margin-top:10px; color: rgba(255,255,255,0.70); font-size: 12px;">
+        Tips: Läs svarstexten efter varje fråga. Där finns ibland små ledtrådar.
+      </div>
+      <div class="actions">
+        <button class="btn" id="startBtn">Starta</button>
+      </div>
+    </section>
+
+    <section class="card" id="quizCard" style="display:none;">
+      <div class="qhead">
+        <div>
+          <div class="qnum" id="qNum">Fråga</div>
+          <div class="question" id="qText">...</div>
+        </div>
+        <div class="qnum" id="attemptText">Försök 1 av 2</div>
+      </div>
+
+      <div class="options" id="options"></div>
+
+      <div class="feedback" id="feedback">
+        <div id="feedbackMain"></div>
+        <div class="small" id="feedbackSmall"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn secondary" id="backBtn" style="display:none;">← Gå tillbaka</button>
+        <button class="btn" id="nextBtn" style="display:none;">Gå vidare →</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="barwrap">
+        <div class="bar" id="bar"></div>
+      </div>
+      <div class="meta">
+        <div id="progressText">0 av 8</div>
+        <div>Poäng är bara bonus</div>
+      </div>
+    </section>
+
+    <section class="card" id="endCard" style="display:none;">
+      <div class="qnum">Slut</div>
+      <div class="question" id="endTitle">Grymt jobbat.</div>
+      <p style="font-size:18px; margin: 6px 0 0;" id="endBody"></p>
+      <div style="font-weight:850; letter-spacing:0.2px; font-size:16px; margin-top: 10px;">
+        Skärmdump + sms till 070-279 30 78
+      </div>
+      <div class="actions">
+        <button class="btn" id="restartBtnEnd">Börja om</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bekräftelse -->
+  <div id="confirmOverlay" role="dialog" aria-modal="true" aria-label="Bekräfta svar">
+    <div class="box">
+      <div class="panel">
+        <div class="head">Är du säker?</div>
+        <div class="txt" id="confirmText">...</div>
+        <div class="row">
+          <button class="btn secondary" id="confirmNo">Nej</button>
+          <button class="btn" id="confirmYes">Ja</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Wallpaper: julkalender-titlar (2015–2024)
+    const wallpaperTokens = [
+      "Tusen år till julafton","Selmas saga","Jakten på tidskristallen","Storm på Lugna gatan","Panik i tomteverkstan",
+      "Mirakel","En hederlig jul med Knyckertz","Kronprinsen som försvann","Trolltider","Snödrömmar",
+      "Lucka 1","Lucka 7","Lucka 13","Lucka 24","SVT","Julkalendern"
+    ];
+
+    function buildWallpaper(){
+      const sheet = document.getElementById("wallpaperSheet");
+      const lines = [];
+      const totalLines = 70;
+      for(let i=0;i<totalLines;i++){
+        const a = wallpaperTokens[(i*3) % wallpaperTokens.length];
+        const b = wallpaperTokens[(i*5 + 2) % wallpaperTokens.length];
+        const c = wallpaperTokens[(i*7 + 4) % wallpaperTokens.length];
+        const d = wallpaperTokens[(i*11 + 1) % wallpaperTokens.length];
+        lines.push(`${a} · ${b} · <strong>${c}</strong> · ${d} · ${a}`);
+      }
+      sheet.innerHTML = lines.map(t => `<div class="line">${t}</div>`).join("");
+    }
+
+    const favoriteList = [
+      { year: 2015, title: "Tusen år till julafton" },
+      { year: 2016, title: "Selmas saga" },
+      { year: 2017, title: "Jakten på tidskristallen" },
+      { year: 2018, title: "Storm på Lugna gatan" },
+      { year: 2019, title: "Panik i tomteverkstan" },
+      { year: 2020, title: "Mirakel" },
+      { year: 2021, title: "En hederlig jul med Knyckertz" },
+      { year: 2022, title: "Kronprinsen som försvann" },
+      { year: 2023, title: "Trolltider – legenden om bergatrollet" },
+      { year: 2024, title: "Snödrömmar" }
+    ];
+
+    const questions = [
+      {
+        id: 1,
+        text: "Vilken kanal sänder julkalendern i Sverige?",
+        options: ["SVT", "TV4", "Netflix"],
+        correctIndex: 0,
+        hint: "Ledtråd: public service.",
+        okText: "Ja, precis. Julkalendern är en riktig SVT-tradition som kommer varje december.",
+        wrong2Text: "Inte riktigt. Det är SVT. Och tur är väl det."
+      },
+      {
+        id: 2,
+        text: "Hur många avsnitt är det i en julkalender?",
+        options: ["12", "24", "31"],
+        correctIndex: 1,
+        hint: "Ledtråd: ett avsnitt per dag fram till julafton.",
+        okText: "Precis. 24 avsnitt. Ett för varje dag fram till julafton.",
+        wrong2Text: "Inte riktigt. Det är 24 avsnitt. Ett per dag fram till julafton."
+      },
+      {
+        id: 3,
+        text: "Vilken av dessa var julkalender 2020?",
+        options: ["Mirakel", "Tjuvarnas jul", "Pelle Svanslös"],
+        correctIndex: 0,
+        hint: "Ledtråd: en kalender där två tjejer byter liv mellan två tider.",
+        okText: "Ja, precis. Mirakel var 2020. Två tjejer byter liv mellan 1920 och 2020.",
+        wrong2Text: "Inte riktigt. Det var Mirakel (2020). Den med tidsbytet mellan 1920 och 2020."
+      },
+      {
+        id: 4,
+        text: "Vilken julkalender sändes 2021?",
+        options: ["En hederlig jul med Knyckertz", "Storm på Lugna gatan", "Mysteriet på Greveholm"],
+        correctIndex: 0,
+        hint: "Ledtråd: en tjuvfamilj som försöker vara… hederlig.",
+        okText: "Helt rätt. En hederlig jul med Knyckertz (2021). Hederligt? Nja. Underhållande? Ja.",
+        wrong2Text: "Inte riktigt. Det var En hederlig jul med Knyckertz (2021)."
+      },
+      {
+        id: 5,
+        text: "Vilken av dessa var julkalender 2023?",
+        options: ["Trolltider – legenden om bergatrollet", "Selmas saga", "Jakten på julen"],
+        correctIndex: 0,
+        hint: "Ledtråd: troll, bärnsten och ett bergatrollet som absolut inte ska vakna.",
+        okText: "Ja, precis. Trolltider – legenden om bergatrollet (2023). Riktig äventyrsstämning.",
+        wrong2Text: "Inte riktigt. Det var Trolltider – legenden om bergatrollet (2023)."
+      },
+      {
+        id: 6,
+        text: "Vilken av dessa är en riktig julkalender från 2010-talet?",
+        options: ["Panik i tomteverkstan", "Sunes sommar", "Emil i Lönneberga"],
+        correctIndex: 0,
+        hint: "Ledtråd: en kalender där tomtevärlden får lite panik (bokstavligen).",
+        okText: "Yes. Panik i tomteverkstan var julkalendern 2019.",
+        wrong2Text: "Inte riktigt. Det var Panik i tomteverkstan (2019)."
+      },
+      {
+        id: 7,
+        text: "Vilken julkalender sändes 2024?",
+        options: ["Snödrömmar", "Julstormen", "Hemliga huset"],
+        correctIndex: 0,
+        hint: "Ledtråd: vinter, natur och en fjällvärld där snön plötsligt uteblir.",
+        okText: "Ja, precis. Snödrömmar var 2024. Varm, magisk och eftertänksam.",
+        wrong2Text: "Inte riktigt. Det var Snödrömmar (2024). Den med vinter, natur och snö som uteblir."
+      },
+      {
+        id: 8,
+        text: "Vilken av de här julkalendrarna (2015–2024) har varit din favorit?",
+        options: favoriteList.map(x => `${x.year}: ${x.title}`),
+        correctIndex: -1,
+        isFavorite: true
+      }
+    ];
+
+    // Elements
+    const introCard = document.getElementById("introCard");
+    const quizCard = document.getElementById("quizCard");
+    const endCard = document.getElementById("endCard");
+
+    const startBtn = document.getElementById("startBtn");
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtnEnd = document.getElementById("restartBtnEnd");
+
+    const qNum = document.getElementById("qNum");
+    const qText = document.getElementById("qText");
+    const optionsEl = document.getElementById("options");
+    const attemptText = document.getElementById("attemptText");
+
+    const feedback = document.getElementById("feedback");
+    const feedbackMain = document.getElementById("feedbackMain");
+    const feedbackSmall = document.getElementById("feedbackSmall");
+
+    const scoreBadge = document.getElementById("scoreBadge");
+    const bar = document.getElementById("bar");
+    const progressText = document.getElementById("progressText");
+
+    const endTitle = document.getElementById("endTitle");
+    const endBody = document.getElementById("endBody");
+
+    // Confirm overlay
+    const confirmOverlay = document.getElementById("confirmOverlay");
+    const confirmText = document.getElementById("confirmText");
+    const confirmYes = document.getElementById("confirmYes");
+    const confirmNo = document.getElementById("confirmNo");
+
+    // State
+    let current = -1;
+    let attempt = 1;
+    let score = 0;
+    const maxScore = 14;
+
+    let history = questions.map(() => null);
+    let pendingChoice = null;
+
+    function updateHeader(){
+      scoreBadge.textContent = `Poäng: ${score}/${maxScore}`;
+    }
+
+    function showFeedback(main, small=""){
+      feedbackMain.textContent = main;
+      feedbackSmall.textContent = small;
+      feedback.classList.add("show");
+    }
+    function hideFeedback(){
+      feedback.classList.remove("show");
+      feedbackMain.textContent = "";
+      feedbackSmall.textContent = "";
+    }
+    function setOptionsDisabled(disabled){
+      optionsEl.querySelectorAll("button.opt").forEach(btn => btn.disabled = disabled);
+    }
+
+    function updateProgress(){
+      const answered = history.filter(x => x && x.finalized).length;
+      const pct = (answered / questions.length) * 100;
+      bar.style.width = `${pct}%`;
+      progressText.textContent = `${answered} av ${questions.length}`;
+    }
+
+    function openConfirm(chosenIndex){
+      const q = questions[current];
+      const optionText = q.options[chosenIndex];
+      pendingChoice = chosenIndex;
+      confirmText.textContent = `Du valde: ${optionText}.`;
+      confirmOverlay.style.display = "block";
+    }
+    function closeConfirm(){
+      confirmOverlay.style.display = "none";
+      pendingChoice = null;
+    }
+
+    function renderQuestion(){
+      hideFeedback();
+      nextBtn.style.display = "none";
+      backBtn.style.display = (current > 0) ? "inline-block" : "none";
+
+      const q = questions[current];
+      qNum.textContent = `Fråga ${q.id} av ${questions.length}`;
+      qText.textContent = q.text;
+
+      optionsEl.innerHTML = "";
+      const labels = ["A","B","C","D","E","F","G","H","I","J"];
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "opt";
+        const label = labels[i] || "";
+        btn.innerHTML = `<span class="label">${label}</span>${opt}`;
+        btn.addEventListener("click", () => openConfirm(i));
+        optionsEl.appendChild(btn);
+      });
+
+      const h = history[current];
+      if(h && h.finalized){
+        setOptionsDisabled(true);
+        attemptText.textContent = `Försök ${h.attemptUsed} av 2`;
+        showFeedback(h.feedbackMain, h.feedbackSmall || "");
+        nextBtn.style.display = "inline-block";
+      } else {
+        setOptionsDisabled(false);
+        attempt = 1;
+        attemptText.textContent = "Försök 1 av 2";
+      }
+
+      updateProgress();
+    }
+
+    function favoriteFeedback(selectedText){
+      const isSnow = selectedText.includes("Snödrömmar");
+      if(isSnow){
+        return {
+          main: "Är det sant? Det är faktiskt min favorit också.",
+          small:
+            "Snödrömmar var både varm och eftertänksam. Den tar upp hur vintrar och natur kan förändras, och att ta ansvar utan pekpinnar. Och ändå behålla hoppet."
+        };
+      }
+      return {
+        main: "Bra val.",
+        small:
+          "Den tycker jag också väldigt mycket om. Min favorit är Snödrömmar, men den här som du valde gillar jag också riktigt mycket."
+      };
+    }
+
+    function applyAnswer(chosenIndex){
+      const q = questions[current];
+
+      if(q.isFavorite){
+        setOptionsDisabled(true);
+        const picked = q.options[chosenIndex];
+        const fb = favoriteFeedback(picked);
+        showFeedback(fb.main, fb.small);
+        history[current] = { finalized:true, earnedPoints:0, attemptUsed:1, feedbackMain: fb.main, feedbackSmall: fb.small };
+        nextBtn.style.display = "inline-block";
+        updateProgress();
+        return;
+      }
+
+      const correct = chosenIndex === q.correctIndex;
+
+      if(correct){
+        setOptionsDisabled(true);
+        const earned = (attempt === 1) ? 2 : 1;
+        score += earned;
+        updateHeader();
+        const extra = earned === 2 ? "2 poäng." : "1 poäng.";
+        showFeedback(q.okText, extra);
+        history[current] = { finalized:true, earnedPoints: earned, attemptUsed: attempt, feedbackMain: q.okText, feedbackSmall: extra };
+        nextBtn.style.display = "inline-block";
+        updateProgress();
+        return;
+      }
+
+      if(attempt === 1){
+        attempt = 2;
+        attemptText.textContent = "Försök 2 av 2";
+        showFeedback("Nästan.", q.hint || "");
+        return;
+      }
+
+      setOptionsDisabled(true);
+      showFeedback(q.wrong2Text, "Vi går vidare.");
+      history[current] = { finalized:true, earnedPoints:0, attemptUsed:2, feedbackMain: q.wrong2Text, feedbackSmall: "Vi går vidare." };
+      nextBtn.style.display = "inline-block";
+      updateProgress();
+    }
+
+    function next(){
+      current++;
+      if(current >= questions.length){
+        finish();
+        return;
+      }
+      renderQuestion();
+    }
+
+    function finish(){
+      quizCard.style.display = "none";
+      endCard.style.display = "block";
+
+      endTitle.textContent = "Grymt jobbat, Aurora.";
+      endBody.textContent =
+        "Nu har du tagit dig hela vägen genom julkalenderresan. Tomten har såklart koll på sånt här. Ta en skärmdump på den här sidan och skicka till numret här ovanför, så kommer en julklapp i retur. God jul ❤️";
+
+      document.querySelector(".wallpaper").style.opacity = "0.24";
+    }
+
+    function start(){
+      introCard.style.display = "none";
+      quizCard.style.display = "block";
+      endCard.style.display = "none";
+
+      current = 0;
+      attempt = 1;
+      score = 0;
+      history = questions.map(() => null);
+      updateHeader();
+      document.querySelector(".wallpaper").style.opacity = "0.18";
+      renderQuestion();
+    }
+
+    function restart(){
+      endCard.style.display = "none";
+      quizCard.style.display = "none";
+      introCard.style.display = "block";
+      current = -1;
+      attempt = 1;
+      score = 0;
+      history = questions.map(() => null);
+      updateHeader();
+      updateProgress();
+      document.querySelector(".wallpaper").style.opacity = "0.18";
+      hideFeedback();
+      nextBtn.style.display = "none";
+      backBtn.style.display = "none";
+      optionsEl.innerHTML = "";
+    }
+
+    // Wire
+    startBtn.addEventListener("click", start);
+    nextBtn.addEventListener("click", () => { next(); });
+    backBtn.addEventListener("click", () => {
+      if(current > 0){
+        current -= 1;
+        renderQuestion();
+      }
+    });
+    restartBtnEnd.addEventListener("click", restart);
+
+    confirmNo.addEventListener("click", (e) => { e.preventDefault(); closeConfirm(); });
+    confirmYes.addEventListener("click", (e) => {
+      e.preventDefault();
+      const chosen = pendingChoice;
+      closeConfirm();
+      if(chosen !== null && chosen !== undefined){
+        applyAnswer(chosen);
+      }
+    });
+    confirmOverlay.addEventListener("click", (e) => { if(e.target === confirmOverlay) closeConfirm(); });
+
+    // Init
+    buildWallpaper();
+    updateHeader();
+    updateProgress();
+  </script>
+</body>
+</html>
